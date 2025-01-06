@@ -1,0 +1,1 @@
+r"^https?://(?:www\.)?twitter\.com/([a-z0-9_]+)$"

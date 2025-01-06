@@ -1,0 +1,65 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+class KMeans:
+    def __init__(self, k, max_iterations=1000):
+        self.k = k
+        print("Received K is -->",  self.k)
+        self.max_iterations = max_iterations
+        print("max iteration K is -->",  self.max_iterations)
+
+    def fit(self, data):
+        # Step 1: Randomly initialize centroids
+        centroids = data[np.random.choice(data.shape[0], self.k, replace=False)]
+        print("centroids in fit is ", centroids)
+        
+        for _ in range(self.max_iterations):
+            # Step 2: Assign each data point to the nearest centroid
+            labels = np.argmin(np.linalg.norm(data[:, np.newaxis] - centroids, axis=2), axis=1)
+            
+            # Step 3: Update centroids to the mean of data points assigned to them
+            new_centroids = np.array([data[labels == i].mean(axis=0) for i in range(self.k)])
+            print("Updated new centroids is ", new_centroids)
+            
+            # Check for convergence
+            if np.all(centroids == new_centroids):
+                print("Centroids and new centroids matched no more matching can be made ")
+                break
+            
+            centroids = new_centroids
+        
+        self.labels_ = labels
+        self.centroids_ = centroids
+
+    def predict(self, data):
+        return np.argmin(np.linalg.norm(data[:, np.newaxis] - self.centroids_, axis=2), axis=1)
+
+
+# Generate random data
+np.random.seed(0)
+data = np.random.rand(100, 2)
+
+# Normalize the data
+data = (data - np.mean(data, axis=0)) / np.std(data, axis=0)
+
+# Initialize KMeans model
+kmeans = KMeans(k=5)
+
+# Fit the model to the data
+kmeans.fit(data)
+
+# Predict the clusters for the data
+predicted_labels =
+kmeans.predict(data)
+
+# Plotting
+plt.figure(figsize=(8, 6))
+plt.scatter(data[:, 0], data[:, 1], c=predicted_labels, cmap='viridis')
+plt.scatter(kmeans.centroids_[:, 0],
+             kmeans.centroids_[:, 1], marker='x', color='red', label='Centroids')
+plt.title('K-Means Clustering')
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+plt.legend()
+plt.grid()
+plt.show()
